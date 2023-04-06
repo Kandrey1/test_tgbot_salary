@@ -1,4 +1,6 @@
 import datetime
+import json
+
 from .service_convert import Convert
 from .db_mongo import aggregation_salary
 
@@ -35,7 +37,7 @@ async def generate_labels(data: dict):
     return labels
 
 
-async def get_salaries(request: dict) -> dict:
+async def get_salaries(request: dict) -> json:
     """
     Возвращает словарь с dataset и labels.
     :param
@@ -52,10 +54,10 @@ async def get_salaries(request: dict) -> dict:
     labels = await generate_labels(request)
 
     for item in labels:
-        output['labels'].append(await Convert.datetime_in_str(item))
+        output["labels"].append(await Convert.datetime_in_str(item))
         if dct_salary.get(item, None):
-            output['dataset'].append(dct_salary[item])
+            output["dataset"].append(dct_salary[item])
         else:
-            output['dataset'].append(0)
+            output["dataset"].append(0)
 
-    return output
+    return json.dumps(output)
